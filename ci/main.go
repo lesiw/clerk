@@ -7,6 +7,8 @@ import (
 	"lesiw.io/ci"
 	"lesiw.io/cmdio"
 	"lesiw.io/cmdio/sys"
+
+	"labs.lesiw.io/ci/golang"
 )
 
 type target struct {
@@ -31,7 +33,9 @@ var targets = []target{
 	{"plan9", "amd64", "", ""},
 }
 
-type actions struct{}
+type actions struct {
+	golang.Actions
+}
 
 var name = "clerk"
 
