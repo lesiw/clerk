@@ -43,6 +43,7 @@ func (cfs *ClerkFS) Add(fsys fs.FS) error {
 	return nil
 }
 
+//nolint:gocyclo
 func (cfs *ClerkFS) Apply(dir string) error {
 	sums, err := loadSums(filepath.Join(dir, "clerk.sum"))
 	rmlist := make(map[string]bool, len(sums))
@@ -59,13 +60,16 @@ func (cfs *ClerkFS) Apply(dir string) error {
 			if d.IsDir() {
 				return nil
 			}
+			if err != nil {
+				return err
+			}
 			delete(rmlist, path)
 
 			realpath := filepath.Join(dir, path)
-			dir := filepath.Dir(realpath)
-			if err := os.MkdirAll(dir, 0755); err != nil {
-				return fmt.Errorf("failed to make directory '%s': %w",
-					path, err)
+			base := filepath.Dir(realpath)
+			if err := os.MkdirAll(base, 0755); err != nil {
+				return fmt.Errorf("failed to make directory '%s': %w", base,
+					err)
 			}
 
 			if !bytes.Equal(fileHash(realpath), sums[path]) {
@@ -112,7 +116,7 @@ func (cfs *ClerkFS) Apply(dir string) error {
 
 func (cfs *ClerkFS) fileExists(path string) (found bool) {
 	for _, f := range *cfs {
-		fs.WalkDir(f, ".", func(p string, d fs.DirEntry, err error) error {
+		_ = fs.WalkDir(f, ".", func(p string, d fs.DirEntry, err error) error {
 			if d.IsDir() {
 				return nil
 			}
