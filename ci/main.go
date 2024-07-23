@@ -2,6 +2,7 @@ package main
 
 import (
 	"os"
+	"strings"
 
 	"lesiw.io/ci"
 	"lesiw.io/cmdio"
@@ -102,8 +103,13 @@ func (a actions) Bump() {
 		sys.Command("curl", "lesiw.io/bump"),
 		sys.Command("sh"),
 	).Output
+	current := "v0.0.0"
+	tag, err := sys.Get("git", "describe", "--abbrev=0", "tags")
+	if err == nil {
+		current = tag.Output
+	}
 	version := cmdio.MustGetPipe(
-		sys.Command("git", "describe", "--abbrev=0", "--tags"),
+		strings.NewReader(current+"\n"),
 		sys.Command(bump, "-s", "1"),
 	).Output
 	sys.MustRun("git", "tag", version)
