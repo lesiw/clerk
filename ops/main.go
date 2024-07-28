@@ -3,12 +3,12 @@ package main
 import (
 	"os"
 
-	"labs.lesiw.io/ci/golib"
-	"lesiw.io/ci"
+	"labs.lesiw.io/ops/golib"
+	"lesiw.io/ops"
 )
 
-type actions struct {
-	golib.Actions
+type Ops struct {
+	golib.Ops
 }
 
 func main() {
@@ -16,5 +16,5 @@ func main() {
 	if len(os.Args) < 2 {
 		os.Args = append(os.Args, "build")
 	}
-	ci.Handle(actions{})
+	ops.Handle(Ops{})
 }

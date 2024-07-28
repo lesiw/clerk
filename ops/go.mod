@@ -3,8 +3,8 @@ module ci.local
 go 1.22.5
 
 require (
-	labs.lesiw.io/ci v0.0.0-20240723225608-1f2b5805453b
-	lesiw.io/ci v0.5.0
+	labs.lesiw.io/ops v0.0.0-20240728191215-eec8c4bbe3a4
+	lesiw.io/ops v0.7.0
 )
 
 require (
