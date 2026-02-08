@@ -48,7 +48,12 @@ func (s sums) Save(path string) error {
 		if len(s[k]) == 0 {
 			return fmt.Errorf("bad hash: empty hash for '%s'", k)
 		}
-		fmt.Fprintf(file, "%s %s\n", k, hex.EncodeToString(s[k]))
+		_, err = fmt.Fprintf(file, "%s %s\n", k,
+			hex.EncodeToString(s[k]))
+		if err != nil {
+			return fmt.Errorf(
+				"failed to write hash for '%s': %w", k, err)
+		}
 	}
 	return nil
 }
