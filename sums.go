@@ -23,6 +23,7 @@ func loadSums(path string) (sums, error) {
 	} else if err != nil {
 		return nil, err
 	}
+	defer file.Close()
 	scanner := bufio.NewScanner(file)
 	for line := 0; scanner.Scan(); line++ {
 		path, sum, ok := strings.Cut(scanner.Text(), " ")
@@ -46,16 +47,21 @@ func (s sums) Save(path string) error {
 	}
 	for _, k := range sort(keys(s)) {
 		if len(s[k]) == 0 {
-			return fmt.Errorf("bad hash: empty hash for '%s'", k)
+			return errors.Join(
+				fmt.Errorf("bad hash: empty hash for '%s'", k),
+				file.Close(),
+			)
 		}
 		_, err = fmt.Fprintf(file, "%s %s\n", k,
 			hex.EncodeToString(s[k]))
 		if err != nil {
-			return fmt.Errorf(
-				"failed to write hash for '%s': %w", k, err)
+			return errors.Join(
+				fmt.Errorf("failed to write hash for '%s': %w", k, err),
+				file.Close(),
+			)
 		}
 	}
-	return nil
+	return file.Close()
 }
 
 func fileHash(path string) []byte {
@@ -63,6 +69,7 @@ func fileHash(path string) []byte {
 	if err != nil {
 		return []byte{}
 	}
+	defer file.Close()
 	hash := sha1.New()
 	_, err = io.Copy(hash, file)
 	if err != nil {

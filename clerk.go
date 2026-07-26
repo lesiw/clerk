@@ -99,7 +99,7 @@ func (cfs *ClerkFS) Apply(dir string) error {
 					path, realpath, err)
 			}
 
-			sums[path] = fileHash(path)
+			sums[path] = fileHash(realpath)
 			return nil
 		})
 		if err != nil {
