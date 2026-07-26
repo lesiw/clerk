@@ -14,6 +14,7 @@ package clerk
 import (
 	"bufio"
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"io/fs"
@@ -85,10 +86,15 @@ func (cfs *ClerkFS) Apply(dir string) error {
 
 			src, err := a.Open(path)
 			if err != nil {
-				return fmt.Errorf("failed to open '%s': %w", path, err)
+				return errors.Join(
+					fmt.Errorf("failed to open '%s': %w", path, err),
+					dst.Close(),
+				)
 			}
 
-			if _, err = io.Copy(dst, src); err != nil {
+			_, err = io.Copy(dst, src)
+			err = errors.Join(err, src.Close(), dst.Close())
+			if err != nil {
 				return fmt.Errorf("failed to copy '%s' -> '%s': %w",
 					path, realpath, err)
 			}
