@@ -70,7 +70,8 @@ func (cfs *ClerkFS) Apply(dir string) error {
 			base := filepath.Dir(realpath)
 			if err := os.MkdirAll(base, 0755); err != nil {
 				return fmt.Errorf("failed to make directory '%s': %w", base,
-					err)
+					err,
+				)
 			}
 
 			if !bytes.Equal(fileHash(realpath), sums[path]) {
@@ -96,7 +97,8 @@ func (cfs *ClerkFS) Apply(dir string) error {
 			err = errors.Join(err, src.Close(), dst.Close())
 			if err != nil {
 				return fmt.Errorf("failed to copy '%s' -> '%s': %w",
-					path, realpath, err)
+					path, realpath, err,
+				)
 			}
 
 			sums[path] = fileHash(realpath)

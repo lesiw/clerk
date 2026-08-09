@@ -52,8 +52,7 @@ func (s sums) Save(path string) error {
 				file.Close(),
 			)
 		}
-		_, err = fmt.Fprintf(file, "%s %s\n", k,
-			hex.EncodeToString(s[k]))
+		_, err = fmt.Fprintf(file, "%s %s\n", k, hex.EncodeToString(s[k]))
 		if err != nil {
 			return errors.Join(
 				fmt.Errorf("failed to write hash for '%s': %w", k, err),
