@@ -47,9 +47,9 @@ func (cfs *ClerkFS) Add(fsys fs.FS) error {
 //nolint:gocyclo
 func (cfs *ClerkFS) Apply(dir string) error {
 	sums, err := loadSums(filepath.Join(dir, "clerk.sum"))
-	rmlist := make(map[string]bool, len(sums))
+	rmlist := make(map[string]struct{}, len(sums))
 	for path := range sums {
-		rmlist[path] = true
+		rmlist[path] = struct{}{}
 	}
 	if err != nil {
 		return fmt.Errorf("failed to load clerk.sum: %w", err)
